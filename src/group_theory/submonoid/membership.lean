@@ -35,7 +35,7 @@ open_locale big_operators
 variables {M A B : Type*}
 
 section assoc
-variables [monoid M] [submonoid_class B M] {S : B}
+variables [monoid M] [set_like B M] [submonoid_class B M] {S : B}
 
 namespace submonoid_class
 
@@ -47,11 +47,13 @@ namespace submonoid_class
   (l.prod : M) = (l.map coe).prod :=
 (submonoid_class.subtype S : _ →* M).map_list_prod l
 
-@[simp, norm_cast, to_additive] theorem coe_multiset_prod {M} [comm_monoid M] [submonoid_class B M]
+@[simp, norm_cast, to_additive] theorem coe_multiset_prod {M} [comm_monoid M]
+  [set_like B M] [submonoid_class B M]
   (m : multiset S) : (m.prod : M) = (m.map coe).prod :=
 (submonoid_class.subtype S : _ →* M).map_multiset_prod m
 
-@[simp, norm_cast, to_additive] theorem coe_finset_prod {ι M} [comm_monoid M] [submonoid_class B M]
+@[simp, norm_cast, to_additive] theorem coe_finset_prod {ι M} [comm_monoid M]
+  [set_like B M] [submonoid_class B M]
   (f : ι → S) (s : finset ι) :
   ↑(∏ i in s, f i) = (∏ i in s, f i : M) :=
 (submonoid_class.subtype S : _ →* M).map_prod f s
@@ -68,7 +70,7 @@ by { lift l to list S using hl, rw ← coe_list_prod, exact l.prod.coe_prop }
 /-- Product of a multiset of elements in a submonoid of a `comm_monoid` is in the submonoid. -/
 @[to_additive "Sum of a multiset of elements in an `add_submonoid` of an `add_comm_monoid` is
 in the `add_submonoid`."]
-lemma multiset_prod_mem {M} [comm_monoid M] [submonoid_class B M] (m : multiset M)
+lemma multiset_prod_mem {M} [comm_monoid M] [set_like B M] [submonoid_class B M] (m : multiset M)
   (hm : ∀ a ∈ m, a ∈ S) : m.prod ∈ S :=
 by { lift m to multiset S using hm, rw ← coe_multiset_prod, exact m.prod.coe_prop }
 
@@ -76,7 +78,7 @@ by { lift m to multiset S using hm, rw ← coe_multiset_prod, exact m.prod.coe_p
     submonoid. -/
 @[to_additive "Sum of elements in an `add_submonoid` of an `add_comm_monoid` indexed by a `finset`
 is in the `add_submonoid`."]
-lemma prod_mem {M : Type*} [comm_monoid M] [submonoid_class B M]
+lemma prod_mem {M : Type*} [comm_monoid M] [set_like B M] [submonoid_class B M]
   {ι : Type*} {t : finset ι} {f : ι → M} (h : ∀c ∈ t, f c ∈ S) :
   ∏ c in t, f c ∈ S :=
 multiset_prod_mem (t.1.map f) $ λ x hx, let ⟨i, hi, hix⟩ := multiset.mem_map.1 hx in hix ▸ h i hi
